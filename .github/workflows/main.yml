@@ -28,8 +28,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install libssl1.0-dev libdb4.8-dev libdb4.8++-dev libboost-all-dev libqrencode-dev miniupnpc
         cd src
-    - name: Make
-      run: make -f makefile.unix
+        make -f makefile.unix
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
