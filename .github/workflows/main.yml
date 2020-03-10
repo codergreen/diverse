@@ -1,14 +1,13 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Auto Release
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - 'v*'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,6 +26,19 @@ jobs:
       run: |
         sudo add-apt-repository ppa:bitcoin/bitcoin
         sudo apt-get update
-        sudo apt-get install libssl1.0-dev libdb4.8-dev libdb4.8++-dev libboost-all-dev libqrencode-dev
+        sudo apt-get install libssl1.0-dev libdb4.8-dev libdb4.8++-dev libboost-all-dev libqrencode-dev miniupnpc
         cd src
-        make -f makefile.unix
+    - name: Make
+      run: make -f makefile.unix
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        files: |
+          diversed
